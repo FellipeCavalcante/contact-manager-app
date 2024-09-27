@@ -8,12 +8,12 @@ const User = require("../models/userModel");
 //@access Public
 const registerUser = asyncHanlder(async (req, res) => {
   const { username, email, password } = req.body;
-  if(!username || !email || !password) {
+  if (!username || !email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory!");
   }
-  const userAvaiable = await User.findOne({ email }); 
-  if(userAvaiable) {
+  const userAvaiable = await User.findOne({ email });
+  if (userAvaiable) {
     res.status(400);
     throw new Error("User already register!");
   }
@@ -28,8 +28,8 @@ const registerUser = asyncHanlder(async (req, res) => {
   });
 
   console.log(`User created ${user}`);
-  if(user) {
-    res.status(201).json({_id: user.id, email: user.email});
+  if (user) {
+    res.status(201).json({ _id: user.id, email: user.email });
   } else {
     res.status(400);
     throw new Error("User data us not valid");
@@ -42,22 +42,24 @@ const registerUser = asyncHanlder(async (req, res) => {
 //@access Public
 const loginUser = asyncHanlder(async (req, res) => {
   const { email, password } = req.body;
-  if(!email || !password) {
+  if (!email || !password) {
     res.status(400);
     throw new Error("All fields are mandatory!");
   }
   const user = await User.findOne({ email });
   //compara password with hashedpassword
-  if(user && (await bcrypt.compare(password, user.password))) {
-    const accesToken = jwt.sign({
-      user: {
-        username: user.username,
-        email: user.email,
-        id: user.id
-      }
-    }, process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m"}
-  );
+  if (user && (await bcrypt.compare(password, user.password))) {
+    const accesToken = jwt.sign(
+      {
+        user: {
+          username: user.username,
+          email: user.email,
+          id: user.id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
     res.status(200).json({ accesToken });
   } else {
     res.status(401);
