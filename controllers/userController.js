@@ -69,7 +69,7 @@ const loginUser = asyncHanlder(async (req, res) => {
 //@route POST /api/users/login
 //@access private
 const currentUser = asyncHanlder(async (req, res) => {
-  res.json({ message: "Current user information" });
+  res.json(req.user);
 });
 
 module.exports = {
